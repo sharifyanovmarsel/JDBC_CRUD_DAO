@@ -24,10 +24,16 @@ public class UserDaoJDBCImpl implements UserDao {
                 "    position VARCHAR(30),\n" +
                 "    age TINYINT\n" +
                 ");";
+        String tableExist = "SHOW TABLES LIKE 'users'";
 
-        try {
-            Statement createTblStmnt = Util.getConnection().createStatement();
-            createTblStmnt.execute(createTable);
+        try (Statement tableExistStatement = Util.getConnection().createStatement();) {
+            if (tableExistStatement.executeUpdate(tableExist) > 0) {
+                try (Statement createTblStmnt = Util.getConnection().createStatement();) {
+                    createTblStmnt.execute(createTable);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -35,8 +41,16 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         String dropTable = "DROP TABLE users";
-        try (Statement dropTableStmnt = Util.getConnection().createStatement()) {
-            dropTableStmnt.execute(dropTable);
+        String tableExist = "SHOW TABLES LIKE 'users'";
+
+        try (Statement tableExistStatement = Util.getConnection().createStatement();) {
+            if (tableExistStatement.executeUpdate(tableExist) < 0) {
+                try (Statement dropTableStmnt = Util.getConnection().createStatement()) {
+                    dropTableStmnt.execute(dropTable);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +64,6 @@ public class UserDaoJDBCImpl implements UserDao {
             saveUserStmnt.setByte(3, age);
             saveUserStmnt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
