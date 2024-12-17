@@ -16,41 +16,26 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String createTable = "CREATE TABLE users \n" +
-                "(\n" +
-                "    id BIGINT AUTO_INCREMENT PRIMARY KEY,\n" +
-                "    name VARCHAR(45),\n" +
-                "    lastname VARCHAR(45),\n" +
-                "    position VARCHAR(30),\n" +
-                "    age TINYINT\n" +
-                ");";
-        String tableExist = "SHOW TABLES LIKE 'users'";
+        String createTable = """
+                CREATE TABLE IF NOT EXISTS users\s
+                (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(45),
+                    lastname VARCHAR(45),
+                    age TINYINT
+                );""";
 
-        try (Statement tableExistStatement = Util.getConnection().createStatement();) {
-            if (tableExistStatement.executeUpdate(tableExist) > 0) {
-                try (Statement createTblStmnt = Util.getConnection().createStatement();) {
-                    createTblStmnt.execute(createTable);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        try (Statement createTblStmnt = Util.getConnection().createStatement();) {
+            createTblStmnt.execute(createTable);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void dropUsersTable() {
-        String dropTable = "DROP TABLE users";
-        String tableExist = "SHOW TABLES LIKE 'users'";
-
-        try (Statement tableExistStatement = Util.getConnection().createStatement();) {
-            if (tableExistStatement.executeUpdate(tableExist) < 0) {
-                try (Statement dropTableStmnt = Util.getConnection().createStatement()) {
-                    dropTableStmnt.execute(dropTable);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        String dropTable = "DROP TABLE IF EXISTS users";
+        try (Statement dropTableStmnt = Util.getConnection().createStatement()) {
+            dropTableStmnt.execute(dropTable);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -74,7 +59,7 @@ public class UserDaoJDBCImpl implements UserDao {
             removeUserStmnt.setLong(1, id);
             removeUserStmnt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -92,7 +77,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 resultUsers.add(user);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return resultUsers;
     }
