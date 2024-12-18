@@ -9,9 +9,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     public static UserDao userDaoJDBC = new UserDaoJDBCImpl();
 
-    public void createUsersTable() {
-        userDaoJDBC.createUsersTable();
-    }
+    public void createUsersTable() {userDaoJDBC.createUsersTable();}
 
     public void dropUsersTable() {
         userDaoJDBC.dropUsersTable();
@@ -30,9 +28,7 @@ public class UserServiceImpl implements UserService {
         return userDaoJDBC.getAllUsers();
     }
 
-    public void cleanUsersTable() {
-        userDaoJDBC.cleanUsersTable();
-    }
+    public void cleanUsersTable() {userDaoJDBC.cleanUsersTable();}
 }
 
 

@@ -14,9 +14,8 @@ public class Util {
 
     public static Connection getConnection() {
         try {
-            Class.forName(DB_DRIVER);
             connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return connection;
@@ -26,7 +25,7 @@ public class Util {
         try {
             connection.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
