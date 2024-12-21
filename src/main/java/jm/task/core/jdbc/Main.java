@@ -1,15 +1,16 @@
 package jm.task.core.jdbc;
 
 import jm.task.core.jdbc.dao.UserDao;
-import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
 import jm.task.core.jdbc.util.Util;
 
+
 public class Main {
     public static void main(String[] args) {
-        Util.getConnection();
-        UserDao userDao = new UserDaoJDBCImpl();
+        //Мои тесты через Dao:
+        UserDao userDao = new UserDaoHibernateImpl();
 
         userDao.createUsersTable();
 
@@ -22,14 +23,11 @@ public class Main {
         userDao.saveUser("Name4", "LastName4", (byte) 38);
         System.out.println("User с именем — Name4 добавлен в базу данных");
 
-        userDao.removeUserById(1);
+        userDao.removeUserById(2);
         System.out.println(userDao.getAllUsers());
         userDao.cleanUsersTable();
         userDao.dropUsersTable();
-
-        // Не до конца понял по заданию следует ли алгоритм работы приложения делать через Dao
-        // или нужно через Srvice делать, поэтому напишу тут такой же код через сервисы ¯\_(ツ)_/¯
-
+        //Реализация алгоритма работы программы по условию:
         UserService userService = new UserServiceImpl();
 
         userService.createUsersTable();
@@ -43,7 +41,6 @@ public class Main {
         System.out.println(userService.getAllUsers());
         userService.cleanUsersTable();
         userService.dropUsersTable();
-
-        Util.closeConnection();
+        Util.closeSessionFactory();
     }
 }
